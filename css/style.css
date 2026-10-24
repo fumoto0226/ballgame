@@ -11,3 +11,8 @@ button { font-family: inherit; cursor: pointer; touch-action: manipulation; }
 button:focus-visible { outline: 2px solid white; outline-offset: 5px; }
 #status { position: absolute; top: 88%; width: 100%; text-align: center; color: #858c87; font-size: 11px; letter-spacing: 1px; pointer-events: none; }
 #reset { position: absolute; bottom: 3%; right: 5%; width: 32px; height: 32px; border: 0; background: transparent; color: #929993; font-size: 25px; }
+
+.attempts { position: absolute; top: 3%; width: 100%; text-align: center; color: #929b94; font-size: 12px; letter-spacing: 1px; pointer-events: none; }
+.attempts strong { color: #e8f5e8; font-size: 23px; font-weight: 500; margin: 0 5px; }
+.attempts.low strong { color: #ffbe70; }
+#reward { position: absolute; margin: 8px 0 0 12px; color: #79ef9a; font-size: 14px; }

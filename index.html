@@ -11,10 +11,13 @@
 <body>
   <main class="game" aria-label="旋转圆盘弹球游戏">
     <canvas id="game" aria-label="用鼠标或手指拖动圆盘旋转方块"></canvas>
+    <div class="attempts" aria-live="polite">剩余发射 <strong id="attempts">5</strong> 次 <span id="reward" hidden>+3 次</span></div>
     <button id="fire">发射</button>
     <p id="status" aria-live="polite">拖动圆盘旋转方块</p>
     <button id="reset" aria-label="重新开始" title="重新开始">↻</button>
   </main>
+  <script src="js/palette.js"></script>
+  <script src="js/block-geometry.js"></script>
   <script src="js/game.js"></script>
 </body>
 </html>
