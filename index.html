@@ -1,5 +1,20 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#000000"><link rel="icon" href="data:,"><title>Falling Ballz · 无限弹球</title><link rel="stylesheet" href="css/style.css"></head>
-<body><main class="game" aria-label="无限弹球游戏"><header><button id="pause" aria-label="暂停">Ⅱ</button><div class="brand">FALLING <b>BALLZ</b><span>无限弹球</span></div><button id="speed" aria-label="切换两倍速度">1×</button></header><div class="stats"><div><span>BEST / 最佳</span><strong id="best">0</strong></div><div class="score"><span>HITS / 命中</span><strong id="score">0</strong></div></div><canvas id="game" width="420" height="720" aria-label="按住并拖动瞄准，松开发射弹球"></canvas><footer><span id="status">按住拖动瞄准 · 松开发射</span><button id="reset" aria-label="重新开始">↻</button></footer><div class="overlay" id="overlay" hidden><p id="overlay-title">已暂停</p><button id="resume">继续游戏</button></div></main><script src="js/game.js"></script></body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="data:,">
+  <title>Falling Ballz · 旋转弹球</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="game" aria-label="旋转圆盘弹球游戏">
+    <canvas id="game" aria-label="用鼠标或手指拖动圆盘旋转方块"></canvas>
+    <button id="fire">发射</button>
+    <p id="status" aria-live="polite">拖动圆盘旋转方块</p>
+    <button id="reset" aria-label="重新开始" title="重新开始">↻</button>
+  </main>
+  <script src="js/game.js"></script>
+</body>
 </html>
