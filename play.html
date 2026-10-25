@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <link rel="icon" href="data:,">
+  <title>Falling Ballz · 旋转弹球</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="game" aria-label="旋转圆盘弹球游戏">
+    <canvas id="game" aria-label="在屏幕任意位置拖动旋转圆盘"></canvas>
+    <span id="level-badge" aria-hidden="true"></span>
+    <a id="back-link" href="index.html" title="返回关卡选择">退出关卡</a>
+    <div id="ball-count" aria-label="待发及回收小球数量"><span class="ball-icon"></span><span>× <b id="ball-count-value">24</b></span></div>
+    <div id="live-combo" hidden aria-label="当前最高连击"><canvas id="combo-ball" width="40" height="40" aria-hidden="true"></canvas><span>连击 × <b id="combo-value">8</b></span></div>
+    <button id="fire"><span id="fire-label">发射</span><span class="attempts" aria-live="polite">剩余 <strong id="attempts">5</strong> 次</span></button>
+    <button id="manual-recall" type="button" disabled>手动召回小球</button>
+    <div id="reward" role="log" aria-live="polite" aria-label="获得的增益" hidden></div>
+    <p id="status" aria-live="polite">拖动圆盘旋转方块</p>
+    <button id="reset" aria-label="重新开始" title="重新开始">↻</button>
+    <a id="editor-link" href="editor.html" title="关卡编辑器">⚙</a>
+    <section id="result-overlay" class="result-overlay" hidden>
+      <div class="result-panel" role="dialog" aria-modal="true" aria-labelledby="result-title" tabindex="-1">
+        <h1 id="result-title">挑战成功</h1>
+        <p class="result-caption">最高连击小球</p>
+        <div class="result-record"><canvas id="result-ball" width="88" height="88" aria-label="最高连击小球形态"></canvas><span>× <strong id="result-combo">0</strong></span></div>
+        <p id="result-ball-label"></p>
+        <div class="result-score" aria-label="此关得分">
+          <p class="result-caption">此关得分</p>
+          <p id="result-score-formula"></p>
+          <p class="result-score-total">= <strong id="result-score">0</strong></p>
+        </div>
+        <div class="result-actions"><a href="index.html">退出</a><button id="result-action" type="button">下一关</button></div>
+      </div>
+    </section>
+  </main>
+  <script src="js/levels/005.js"></script>
+  <script src="js/level-catalog.js"></script>
+  <script src="js/palette.js"></script>
+  <script src="js/block-geometry.js"></script>
+  <script src="js/layer-layout.js"></script>
+  <script src="js/game-settings.js"></script>
+  <script src="js/rewards.js"></script>
+  <script src="js/vendor/matter-0.20.0.min.js"></script>
+  <script src="js/bumpers.js"></script>
+  <script src="js/ball-effects.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/run-stats.js"></script>
+  <script src="js/live-combo.js"></script>
+  <script src="js/reward-feed.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

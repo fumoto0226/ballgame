@@ -5,19 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <link rel="icon" href="data:,">
-  <title>Falling Ballz · 旋转弹球</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Falling Ballz · 关卡</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #000; color: #fff; font-family: "Helvetica Neue", -apple-system, sans-serif; }
+    body { display: flex; align-items: center; justify-content: center; }
+    .wrap { width: min(100vw, 420px); padding: 32px 28px; text-align: center; }
+    h1 { font-size: 14px; letter-spacing: 4px; color: #e6ebe8; margin: 0 0 28px; font-weight: 400; }
+    .levels { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .levels a { display: inline-flex; align-items: center; justify-content: center; min-width: 56px; height: 36px; padding: 0 10px; border: 1px solid #e6ebe8; color: #e6ebe8; font-size: 13px; text-decoration: none; letter-spacing: 1px; border-radius: 4px; }
+    .levels a:hover { background: #e6ebe8; color: #000; }
+    .empty { color: #666; font-size: 12px; letter-spacing: 1px; margin-top: 10px; }
+    .footer { margin-top: 36px; font-size: 11px; color: #666; letter-spacing: 1px; }
+    .footer a { color: #999; text-decoration: none; border-bottom: 1px solid #333; padding-bottom: 1px; }
+    .footer a:hover { color: #fff; border-color: #fff; }
+  </style>
 </head>
 <body>
-  <main class="game" aria-label="旋转圆盘弹球游戏">
-    <canvas id="game" aria-label="用鼠标或手指拖动圆盘旋转方块"></canvas>
-    <div class="attempts" aria-live="polite">剩余发射 <strong id="attempts">5</strong> 次 <span id="reward" hidden>+3 次</span></div>
-    <button id="fire">发射</button>
-    <p id="status" aria-live="polite">拖动圆盘旋转方块</p>
-    <button id="reset" aria-label="重新开始" title="重新开始">↻</button>
+  <main class="wrap">
+    <h1>选择关卡</h1>
+    <div id="level-list" class="levels"></div>
+    <div id="level-empty" class="empty" hidden>还没有关卡 · 去编辑器创建一个</div>
+    <div class="footer"><a href="editor.html">编辑器</a></div>
   </main>
-  <script src="js/palette.js"></script>
-  <script src="js/block-geometry.js"></script>
-  <script src="js/game.js"></script>
+  <script src="js/levels/005.js"></script>
+  <script src="js/level-catalog.js"></script>
+  <script>
+    (() => {
+      const saves = LevelCatalog.all();
+      const names = Object.keys(saves).sort();
+      const list = document.querySelector('#level-list');
+      const empty = document.querySelector('#level-empty');
+      if (!names.length) { empty.hidden = false; return; }
+      for (const name of names) {
+        const a = document.createElement('a');
+        a.href = `play.html?level=${encodeURIComponent(name)}`;
+        a.textContent = name;
+        list.appendChild(a);
+      }
+    })();
+  </script>
 </body>
 </html>

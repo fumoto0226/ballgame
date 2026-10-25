@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>关卡编辑器 · Falling Ballz</title>
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>关卡编辑器</h1>
+    <nav>
+      <span class="label">游戏设置：</span>
+      <input id="settings-name" placeholder="未命名设置" maxlength="40">
+      <button id="save-settings" class="primary">保存设置</button>
+      <button id="open-settings-saves">我的设置</button>
+      <span class="sep"></span>
+      <a href="index.html" class="link">返回游戏</a>
+    </nav>
+  </header>
+
+  <main class="editor">
+    <!-- 左侧：形状调色板 -->
+    <aside class="palette-panel">
+      <h2>形状调色板</h2>
+      <p class="hint">拖动形状到圆盘内添加</p>
+      <ul class="palette" id="palette"></ul>
+    </aside>
+
+    <!-- 中间：游戏画布 -->
+    <section class="canvas-wrap">
+      <div class="canvas-left">
+        <div class="test-controls">
+          <span class="label">测试与试玩</span>
+          <button id="playtest-start" class="primary">开始试玩</button>
+          <button id="playtest-start-unlimited">无限试玩</button>
+          <button id="playtest-stop" class="hidden">结束试玩</button>
+          <span id="playtest-info" class="hint"></span>
+          <button id="test-1">发射 1 球</button>
+          <button id="test-10">发射全部球</button>
+          <button id="test-stop" class="hidden">停止</button>
+        </div>
+        <div class="layer-group">
+          <span class="label">层</span>
+          <div id="layer-list" class="layer-list"></div>
+        </div>
+      </div>
+      <div class="canvas-main">
+        <div class="canvas-stage">
+          <canvas id="editor-canvas" width="420" height="820"></canvas>
+          <div id="playtest-overlay" class="hidden"><iframe id="playtest-frame" title="当前关卡试玩"></iframe></div>
+          <div id="layer-nudge" class="layer-nudge hidden">
+            <button id="layer-up" title="往更上面一层（层号 -1）">▲</button>
+            <div id="layer-nudge-value">1</div>
+            <button id="layer-down" title="往更下面一层（层号 +1）">▼</button>
+          </div>
+          <div id="promote-prompt" class="promote-prompt hidden">
+            <button id="promote-yes" title="移到第 1 层">✓</button>
+            <button id="promote-no" title="取消本次移动">✕</button>
+          </div>
+        </div>
+        <div class="canvas-tools">
+          <span class="count" id="block-count">0 个方块</span>
+          <button id="clear-all" class="tool-btn">清除所有方块</button>
+          <button id="clear-layer" class="tool-btn">清除本层</button>
+          <button id="reset-angle" class="tool-btn">复位角度</button>
+          <button id="lock-angle" class="tool-btn" aria-pressed="false">锁定角度</button>
+          <span id="selection-hint" class="hint"></span>
+        </div>
+      </div>
+      <div class="canvas-side">
+        <input id="level-name" placeholder="未命名关卡" maxlength="40">
+        <div class="side-row attempts-row">
+          <label class="label" for="initial-attempts">初始发射次数</label>
+          <input id="initial-attempts" type="number" min="1" max="999" step="1" value="5">
+        </div>
+        <div class="side-row">
+          <button id="save-level" class="primary">保存关卡</button>
+          <button id="open-level-saves">我的关卡</button>
+        </div>
+        <div class="side-row">
+          <button id="new-level">新建</button>
+          <button id="load-default">默认</button>
+        </div>
+        <section class="ball-roster">
+          <div class="ball-roster-head"><strong>初始球数</strong><button id="reset-balls" type="button">重置</button></div>
+          <table id="ball-roster"><thead><tr><th>特性</th><th>小</th><th>中</th><th>大</th></tr></thead><tbody></tbody></table>
+          <p id="ball-total" class="hint"></p>
+        </section>
+      </div>
+    </section>
+
+    <!-- 右侧：属性 / 游戏设置 -->
+    <aside class="inspector">
+      <div class="tabs">
+        <button type="button" class="tab active" data-tab="props">属性</button>
+        <button type="button" class="tab" data-tab="colors">颜色</button>
+        <button type="button" class="tab" data-tab="sizes">尺寸</button>
+        <button type="button" class="tab" data-tab="bumpers">弹力板</button>
+      </div>
+
+      <section class="tab-panel" data-panel="props">
+        <h2>方块属性</h2>
+        <div id="no-selection" class="hint">在画布上点选一个方块来编辑它。</div>
+        <p id="multi-selection" class="hint"></p>
+        <div id="selection-layout" class="hidden"><button type="button" data-layout="row">排成一行</button><button type="button" data-layout="column">排成一列</button><button type="button" data-layout="horizontal">水平等距</button><button type="button" data-layout="vertical">垂直等距</button></div>
+        <form id="inspector" class="hidden">
+          <div class="row"><span>类型</span>
+            <select id="f-type">
+              <option value="circle">圆形</option>
+              <option value="triangle">三角形</option>
+              <option value="square">方形</option>
+            </select>
+          </div>
+          <div class="row"><span>尺寸</span>
+            <select id="f-tier">
+              <option value="medium">中等</option>
+            </select>
+          </div>
+          <div class="row"><span>HP (数字)</span>
+            <input type="number" id="f-hp" min="1" step="1">
+          </div>
+          <div class="row"><span>当前颜色</span>
+            <div class="color-swatch" id="f-color-swatch"></div>
+          </div>
+          <div class="row"><span>相对X (dx)</span>
+            <input type="number" id="f-dx" step="1">
+          </div>
+          <div class="row"><span>相对Y (dy)</span>
+            <input type="number" id="f-dy" step="1">
+          </div>
+          <div class="row"><span>基础角度 (°)</span>
+            <input type="number" id="f-angle" step="1">
+          </div>
+          <div class="row"><span>所在层 (由遮挡决定)</span>
+            <input type="number" id="f-layer" readonly>
+          </div>
+          <div class="row"><span>奖励方块</span>
+            <input type="checkbox" id="f-bonus">
+          </div>
+          <div class="row"><span>奖励类型</span>
+            <select id="f-reward-type"><option value="attempts">增加发射次数</option><option value="balls">增加球数 (+N)</option><option value="balls-multiply">球数倍增 (×N)</option><option value="bumper">弹力板</option><option value="buff-size">强化方块 · 尺寸升级</option><option value="buff-lightning">强化方块 · 闪电</option><option value="buff-vitality">强化方块 · 活力</option><option value="buff-explosive">强化方块 · 爆炸</option></select>
+          </div>
+          <div class="row"><span>奖励数量</span><input id="f-reward-amount" type="number" min="1" max="99" step="1" value="1"><span id="f-reward-unit" class="hint" style="margin-left:4px;"></span></div>
+          <p class="hint" id="reward-lifetime"></p>
+          <div class="row-buttons">
+            <button type="button" id="duplicate" title="复制选中方块（⌘/Ctrl+D）">复制</button>
+            <button type="button" id="delete" class="danger">删除</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="tab-panel hidden" data-panel="colors">
+        <h2>HP 颜色锚点</h2>
+        <p class="hint">两个锚点之间按色相自动渐变，至少保留 2 个。</p>
+        <div id="anchor-list" class="anchor-list"></div>
+        <button id="add-anchor" class="add-anchor">+ 添加锚点</button>
+
+        <h2>各层亮度</h2>
+        <p class="hint">颜色乘以亮度值（0–1）变暗。第 4 层起不显示。</p>
+        <div class="layer-previews">
+          <div class="layer-row">
+            <span>第 1 层</span>
+            <input type="number" class="brightness-input" data-layer="1" value="1" step="0.05" min="0" max="1" disabled>
+            <div class="gradient-preview" data-layer="1"></div>
+          </div>
+          <div class="layer-row">
+            <span>第 2 层</span>
+            <input type="number" class="brightness-input" data-layer="2" step="0.05" min="0" max="1">
+            <div class="gradient-preview" data-layer="2"></div>
+          </div>
+          <div class="layer-row">
+            <span>第 3 层</span>
+            <input type="number" class="brightness-input" data-layer="3" step="0.05" min="0" max="1">
+            <div class="gradient-preview" data-layer="3"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel hidden" data-panel="sizes">
+        <h2>形状尺寸 — 中等</h2>
+        <p class="hint">所有「中等」方块的半径。改一次全部跟着变。</p>
+        <div id="tier-sizes" class="tier-sizes"></div>
+      </section>
+      <section class="tab-panel hidden" data-panel="bumpers">
+        <h2>添加弹力板</h2>
+        <p class="hint">圆周共 36 格，每格 10°。按住圆环拖动，批量选中或取消，再点击确定。顶部 ±5° 保留为入口。</p>
+        <canvas id="bumper-picker" width="280" height="280" aria-label="弹力板区域选择"></canvas>
+        <p id="bumper-info" class="hint"></p>
+        <button type="button" id="bumper-confirm">确定</button>
+        <button type="button" id="bumper-clear">清空</button>
+      </section>
+    </aside>
+  </main>
+
+  <!-- 存档面板（设置 or 关卡 共用） -->
+  <div id="saves-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card">
+      <header>
+        <h2 id="saves-title">我的存档</h2>
+        <button class="close" data-close aria-label="关闭">×</button>
+      </header>
+      <div class="saves-body">
+        <ul id="saves-list" class="saves-list"></ul>
+        <div id="saves-empty" class="hint">还没有存档。</div>
+      </div>
+      <div id="json-view" class="json-view hidden">
+        <div class="json-view-head">
+          <strong id="json-view-name"></strong>
+          <button type="button" id="json-view-close">返回列表</button>
+        </div>
+        <textarea id="json-view-text" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/levels/005.js"></script>
+  <script src="js/level-catalog.js"></script>
+  <script src="js/palette.js"></script>
+  <script src="js/block-geometry.js"></script>
+  <script src="js/game-settings.js"></script>
+  <script src="js/rewards.js"></script>
+  <script src="js/vendor/matter-0.20.0.min.js"></script>
+  <script src="js/bumpers.js"></script>
+  <script src="js/ball-effects.js"></script>
+  <script src="js/physics.js"></script>
+  <script src="js/layer-layout.js"></script>
+  <script src="js/editor-guides.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>

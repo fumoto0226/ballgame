@@ -1,14 +1,24 @@
 // One visual mass for every shape; collision and overlap tests use these exact outlines.
 (() => {
   const AREA = Math.PI * 20 ** 2;
-  function radius(type) {
-    return type === 'circle' ? 20 : type === 'square' ? Math.sqrt(AREA) / 2 : Math.sqrt(4 * AREA / (3 * Math.sqrt(3)));
+  // Shape sizes are grouped by tier (medium is the baseline). Game and editor read the same table;
+  // editing a tier updates every block that references it.
+  const tiers = {
+    medium: {
+      circle: 20,
+      square: Math.sqrt(AREA) / 2 * 1.05,
+      triangle: Math.sqrt(4 * AREA / (3 * Math.sqrt(3))) * 0.9,
+    },
+  };
+  function radius(type, tier = 'medium') {
+    return (tiers[tier] || tiers.medium)[type];
   }
   function vertices(b) {
     const n = b.type === 'triangle' ? 3 : 4;
+    const base = b.r != null ? b.r : radius(b.type, b.tier);
     return Array.from({ length: n }, (_, i) => {
       const angle = b.angle + (n === 3 ? -Math.PI / 2 : Math.PI / 4) + i * Math.PI * 2 / n;
-      const r = n === 4 ? b.r * Math.SQRT2 : b.r;
+      const r = n === 4 ? base * Math.SQRT2 : base;
       return { x: b.x + Math.cos(angle) * r, y: b.y + Math.sin(angle) * r };
     });
   }
@@ -40,5 +50,5 @@
     }
     return true;
   }
-  window.BlockGeometry = { area: AREA, radius, vertices, overlaps };
+  window.BlockGeometry = { area: AREA, radius, vertices, overlaps, tiers };
 })();
