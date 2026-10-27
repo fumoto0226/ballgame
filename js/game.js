@@ -9,13 +9,13 @@
   const levelName = params.get('level');
   let playtest = null;
   try { if (playtestKey) playtest = JSON.parse(sessionStorage.getItem(playtestKey)); } catch {}
-  // When the home page launches a saved level, synthesize a playtest-shaped bundle so the
+  // When the home page launches a published level, synthesize a playtest-shaped bundle so the
   // rest of this file reads it the same way as an editor playtest session.
   if (!playtest && levelName) {
     try {
       const level = LevelCatalog.get(levelName);
       if (level) {
-        playtest = { level, settings: GameSettings.saved() || {}, ballSpecs: [], unlimited: false,
+        playtest = { level, settings: level.settings || {}, ballSpecs: [], unlimited: false,
           initialAttempts: level.initialAttempts, diskAngle: 0 };
         // Expand level.ballCounts into ballSpecs (default 10 plain if missing).
         const TYPES = [
@@ -34,7 +34,7 @@
       }
     } catch {}
   }
-  if (!playtest) GameSettings.apply(GameSettings.saved());
+  // Editor settings are carried only in the explicit playtest bundle.
   const unlimited = !!playtest?.unlimited;
   if (playtest) {
     // The "playtest" class hides page chrome (badge + exit) during editor playtest only.

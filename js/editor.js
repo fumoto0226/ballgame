@@ -1243,7 +1243,7 @@
   };
 
   function loadStore(kind) {
-    if (kind === 'level') return LevelCatalog.all();
+    if (kind === 'level') return LevelCatalog.editorLevels();
     try { return JSON.parse(localStorage.getItem(KEYS[kind].store) || '{}'); }
     catch { return {}; }
   }

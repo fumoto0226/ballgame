@@ -1,9 +1,10 @@
-// Built-in challenges are available without a browser save. User edits take precedence.
+// Published levels ship with the site; editor drafts never override them.
 (() => {
-  function all() {
+  function all() { return { ...(window.BuiltinLevels || {}) }; }
+  function editorLevels() {
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem('ballz-editor-levels') || '{}') || {}; } catch {}
-    return { ...(window.BuiltinLevels || {}), ...saved };
+    return { ...all(), ...saved };
   }
-  window.LevelCatalog = { all, get: name => all()[name] };
+  window.LevelCatalog = { all, get: name => all()[name], editorLevels };
 })();
